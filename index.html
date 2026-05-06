@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Thermometer</title>
+<title>Fundraising Thermometer</title>
 
 <style>
   body {
@@ -16,30 +16,19 @@
     color: #111;
   }
 
-  /* INPUT */
   .controls {
     position: absolute;
     top: 20px;
-    text-align: center;
+    display: flex;
+    gap: 20px;
   }
 
   input {
     padding: 10px;
-    font-size: 18px;
+    font-size: 16px;
     border-radius: 8px;
     border: 1px solid #ccc;
-    width: 220px;
-  }
-
-  button {
-    padding: 10px 15px;
-    font-size: 16px;
-    margin-left: 10px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    background: #111;
-    color: white;
+    width: 200px;
   }
 
   .container {
@@ -58,7 +47,7 @@
     opacity: 0.6;
   }
 
-  /* THERMOMETER BODY */
+  /* THERMOMETER */
   .thermometer {
     position: relative;
     width: 120px;
@@ -75,35 +64,16 @@
     width: 100%;
     height: 0%;
     background: linear-gradient(to top, #ff3b3b, #ffb347);
-    transition: height 0.6s ease;
+    transition: height 0.4s ease;
+    border-radius: 60px 60px 0 0;
   }
 
-  /* CLEAN BOTTOM FIX (NO HALF-CIRCLE GLOW) */
-  .thermometer::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 30px;
-    background: #f3f3f3;
-    z-index: 2;
-  }
-
-  /* BULB (now aligned cleanly, no overlap glitch) */
+  /* REMOVE BULB COMPLETELY (fixes red bottom issue) */
   .bulb {
-    position: absolute;
-    bottom: -70px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 150px;
-    height: 150px;
-    background: #ff3b3b;
-    border-radius: 50%;
-    border: 2px solid #ddd;
-    z-index: 1;
+    display: none;
   }
 
-  /* SMALL 5% WIDTH MARKERS */
+  /* MARKERS (subtle) */
   .tick {
     position: absolute;
     left: 0;
@@ -132,13 +102,13 @@
   }
 
   .amount {
-    font-size: 30px;
+    font-size: 32px;
     margin-bottom: 10px;
   }
 
   .goal {
-    font-size: 26px;
-    font-weight: 700;
+    font-size: 36px;   /* 🔥 BIGGER GOAL */
+    font-weight: 800;
     margin-top: 10px;
   }
 
@@ -147,10 +117,9 @@
 
 <body>
 
-<!-- INPUT -->
+<!-- INPUT (live typing) -->
 <div class="controls">
-  <input id="input" type="number" placeholder="Enter amount ($)">
-  <button onclick="updateFromInput()">Update</button>
+  <input id="amountInput" type="number" placeholder="Current amount ($)">
 </div>
 
 <div class="container">
@@ -167,7 +136,6 @@
   <!-- THERMOMETER -->
   <div class="thermometer">
 
-    <!-- subtle 25/50/75 markers (5% width) -->
     <div class="tick" style="bottom:25%"></div>
     <div class="tick-label" style="bottom:25%">25%</div>
 
@@ -178,7 +146,7 @@
     <div class="tick-label" style="bottom:75%">75%</div>
 
     <div class="fill" id="fill"></div>
-    <div class="bulb"></div>
+
   </div>
 
   <!-- INFO -->
@@ -195,21 +163,17 @@
 
   const fill = document.getElementById("fill");
   const amountText = document.getElementById("amount");
-  const input = document.getElementById("input");
+  const input = document.getElementById("amountInput");
 
-  function updateThermometer(amount) {
+  function update(amount) {
     const percent = (amount / goal) * 100;
     fill.style.height = percent + "%";
-    amountText.textContent = "$" + Number(amount).toLocaleString();
+    amountText.textContent = "$" + Number(amount || 0).toLocaleString();
   }
 
-  function updateFromInput() {
-    const value = Number(input.value);
-    if (!isNaN(value)) updateThermometer(value);
-  }
-
-  input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") updateFromInput();
+  // LIVE typing (no button needed)
+  input.addEventListener("input", () => {
+    update(Number(input.value));
   });
 
 </script>
