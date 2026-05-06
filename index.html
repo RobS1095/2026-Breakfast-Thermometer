@@ -49,13 +49,13 @@
     gap: 30px;
   }
 
-  /* SCALE */
+  /* SCALE - Now showing Percentages */
   .scale {
     height: 400px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bold;
     color: var(--svs-purple);
     text-align: right;
@@ -86,12 +86,11 @@
   .amount-label { font-size: 16px; color: #777; text-transform: uppercase; letter-spacing: 1px; }
   .amount { font-size: 52px; font-weight: 900; color: var(--svs-purple); margin: 0; }
   
-  /* GOAL TEXT FIXES: Darker and separated */
   .goal { 
     font-size: 24px; 
-    color: #333; /* Darker */
+    color: #333; 
     font-weight: bold; 
-    margin-top: 20px; /* More separation */
+    margin-top: 20px; 
   }
 
   /* HISTORY SIDEBAR */
@@ -201,11 +200,11 @@
   <div class="display-area">
     <div class="thermometer-container">
       <div class="scale">
-        <div>$85,000</div>
-        <div>$63,750</div>
-        <div>$42,500</div>
-        <div>$21,250</div>
-        <div>$0</div>
+        <div>100%</div>
+        <div>75%</div>
+        <div>50%</div>
+        <div>25%</div>
+        <div>0%</div>
       </div>
 
       <div class="thermometer-tube">
@@ -254,10 +253,9 @@
 
     function refresh() {
       const currentTotal = donationHistory.reduce((sum, val) => sum + val, 0);
-      
       const percentage = Math.min((currentTotal / goal) * 100, 100);
-      fill.style.height = percentage + '%';
       
+      fill.style.height = percentage + '%';
       totalDisplay.textContent = '$' + currentTotal.toLocaleString();
       
       historyList.innerHTML = '';
@@ -282,11 +280,10 @@
       if (val > 0) {
         addAmount(val);
         customInput.value = '';
-        customInput.focus(); // Keep focus for next entry
+        customInput.focus();
       }
     }
 
-    /* ENTER KEY LOGIC */
     customInput.addEventListener("keypress", function(event) {
       if (event.key === "Enter") {
         event.preventDefault();
