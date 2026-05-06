@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Fundraising Thermometer</title>
+<title>Thermometer</title>
 
 <style>
   body {
@@ -22,6 +22,30 @@
     gap: 80px;
   }
 
+  /* INPUT PANEL */
+  .controls {
+    position: absolute;
+    top: 20px;
+    text-align: center;
+  }
+
+  input {
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: none;
+    width: 200px;
+  }
+
+  button {
+    padding: 10px 15px;
+    font-size: 16px;
+    margin-left: 10px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+
   /* SCALE */
   .scale {
     height: 80vh;
@@ -29,12 +53,7 @@
     flex-direction: column;
     justify-content: space-between;
     font-size: 14px;
-    opacity: 0.85;
-  }
-
-  .scale div {
-    position: relative;
-    padding-left: 10px;
+    opacity: 0.8;
   }
 
   /* THERMOMETER */
@@ -46,32 +65,19 @@
     border-radius: 60px;
     border: 2px solid rgba(255,255,255,0.25);
     overflow: hidden;
-    backdrop-filter: blur(6px);
   }
 
   .fill {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 30%;
+    height: 0%;
     background: linear-gradient(to top, #ff3b3b, #ffb347);
     transition: height 0.6s ease;
     border-bottom-left-radius: 60px;
     border-bottom-right-radius: 60px;
   }
 
-  /* FIX: clean base (removes weird artifact look) */
-  .thermometer::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 60px;
-    background: transparent;
-    pointer-events: none;
-  }
-
-  /* BULB */
   .bulb {
     position: absolute;
     bottom: -70px;
@@ -84,7 +90,7 @@
     border: 2px solid rgba(255,255,255,0.25);
   }
 
-  /* TICK MARKS (25/50/75%) */
+  /* MARKERS */
   .tick {
     position: absolute;
     left: 0;
@@ -127,6 +133,12 @@
 
 <body>
 
+<!-- INPUT -->
+<div class="controls">
+  <input id="input" type="number" placeholder="Enter amount ($)">
+  <button onclick="updateFromInput()">Update</button>
+</div>
+
 <div class="container">
 
   <!-- SCALE -->
@@ -151,17 +163,14 @@
     <div class="tick" style="bottom:75%"></div>
     <div class="tick-label" style="bottom:75%">75%</div>
 
-    <!-- fill -->
     <div class="fill" id="fill"></div>
-
-    <!-- bulb -->
     <div class="bulb"></div>
   </div>
 
   <!-- INFO -->
   <div class="info">
     <div class="title">Fundraising Goal</div>
-    <div class="amount" id="amount">$25,500</div>
+    <div class="amount" id="amount">$0</div>
     <div class="goal">Goal: $85,000</div>
   </div>
 
@@ -169,18 +178,28 @@
 
 <script>
   const goal = 85000;
-  let currentAmount = 25500;
 
   const fill = document.getElementById("fill");
   const amountText = document.getElementById("amount");
+  const input = document.getElementById("input");
 
   function updateThermometer(amount) {
     const percent = (amount / goal) * 100;
     fill.style.height = percent + "%";
-    amountText.textContent = "$" + amount.toLocaleString();
+    amountText.textContent = "$" + Number(amount).toLocaleString();
   }
 
-  updateThermometer(currentAmount);
+  function updateFromInput() {
+    const value = Number(input.value);
+    if (isNaN(value)) return;
+    updateThermometer(value);
+  }
+
+  // optional: press Enter to update
+  input.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") updateFromInput();
+  });
+
 </script>
 
 </body>
