@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Drag Thermometer</title>
+
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f4f4f4;
+    font-family: Arial, sans-serif;
+  }
+
+  .wrapper {
+    text-align: center;
+  }
+
+  .thermometer {
+    position: relative;
+    width: 70px;
+    height: 320px;
+    background: #e0e0e0;
+    border-radius: 35px;
+    border: 3px solid #999;
+    overflow: hidden;
+    margin: auto;
+  }
+
+  .fill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(to top, #ff3b3b, #ff8c42);
+    cursor: grab;
+  }
+
+  .fill:active {
+    cursor: grabbing;
+  }
+
+  .bulb {
+    position: absolute;
+    bottom: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110px;
+    height: 110px;
+    background: #ff3b3b;
+    border-radius: 50%;
+    border: 3px solid #999;
+  }
+
+  .percent {
+    margin-top: 70px;
+    font-size: 20px;
+    font-weight: bold;
+  }
+</style>
+
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="thermometer" id="thermo">
+    <div class="fill" id="fill"></div>
+    <div class="bulb"></div>
+  </div>
+  <div class="percent" id="percent">40%</div>
+</div>
+
+<script>
+  const thermo = document.getElementById('thermo');
+  const fill = document.getElementById('fill');
+  const percentText = document.getElementById('percent');
+
+  let isDragging = false;
+
+  fill.addEventListener('mousedown', () => isDragging = true);
+  document.addEventListener('mouseup', () => isDragging = false);
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+
+    const rect = thermo.getBoundingClientRect();
+    let offsetY = e.clientY - rect.top;
+
+    let percent = 100 - (offsetY / rect.height) * 100;
+    percent = Math.max(0, Math.min(100, percent));
+
+    fill.style.height = percent + '%';
+    percentText.textContent = Math.round(percent) + '%';
+  });
+
+  // Touch support (mobile)
+  document.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+
+    const rect = thermo.getBoundingClientRect();
+    let offsetY = e.touches[0].clientY - rect.top;
+
+    let percent = 100 - (offsetY / rect.height) * 100;
+    percent = Math.max(0, Math.min(100, percent));
+
+    fill.style.height = percent + '%';
+    percentText.textContent = Math.round(percent) + '%';
+  });
+
+  fill.addEventListener('touchstart', () => isDragging = true);
+  document.addEventListener('touchend', () => isDragging = false);
+</script>
+
+</body>
+</html>
