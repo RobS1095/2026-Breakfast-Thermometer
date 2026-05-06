@@ -2,24 +2,37 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Thermometer</title>
+<title>Thermometer - SVS Fundraising</title>
 
 <style>
   body {
     margin: 0;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* Stack header and content */
     align-items: center;
     background: #ffffff;
     font-family: Arial, sans-serif;
     color: #111;
+    padding: 20px;
+  }
+
+  /* HEADER / LOGO */
+  .header {
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .logo {
+    max-width: 300px; /* Adjust size as needed */
+    height: auto;
   }
 
   /* INPUT */
   .controls {
-    position: absolute;
-    top: 20px;
+    margin-bottom: 30px;
   }
 
   input {
@@ -28,60 +41,62 @@
     border-radius: 8px;
     border: 1px solid #ccc;
     width: 220px;
+    text-align: center;
   }
 
   .container {
     display: flex;
     align-items: center;
-    gap: 80px;
+    gap: 60px;
+    height: 60vh; /* Scaled down slightly to fit with header */
   }
 
   /* SCALE */
   .scale {
-    height: 80vh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     font-size: 14px;
     opacity: 0.6;
+    padding-bottom: 10px; /* Align with thermometer bottom */
   }
 
   /* THERMOMETER */
   .thermometer {
     position: relative;
-    width: 120px;
-    height: 80vh;
+    width: 100px;
+    height: 100%;
     background: #f3f3f3;
     border: 2px solid #ddd;
-    border-radius: 60px;
+    border-radius: 50px;
     overflow: hidden;
   }
 
-  /* 🔥 IMPORTANT FIX: NO ROUNDED FILL */
   .fill {
     position: absolute;
     bottom: 0;
     width: 100%;
     height: 0%;
-    background: linear-gradient(to top, #ff3b3b, #ffb347);
-    transition: height 0.4s ease;
-    border-radius: 0; /* removes bottom blob */
+    background: linear-gradient(to top, #4a306d, #a288bd); /* Matches logo colors */
+    transition: height 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: 0; 
   }
 
   /* MARKERS */
   .tick {
     position: absolute;
     left: 0;
-    width: 5%;
+    width: 10%;
     height: 1px;
-    background: rgba(0,0,0,0.12);
+    background: rgba(0,0,0,0.2);
   }
 
   .tick-label {
     position: absolute;
-    left: 10%;
+    left: 15%;
     font-size: 11px;
-    opacity: 0.3;
+    opacity: 0.4;
     transform: translateY(-50%);
   }
 
@@ -91,20 +106,22 @@
   }
 
   .title {
-    font-size: 34px;
+    font-size: 28px;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    color: #4a306d; /* SVS Purple */
   }
 
   .amount {
-    font-size: 32px;
+    font-size: 42px;
+    font-weight: 800;
     margin-bottom: 10px;
   }
 
   .goal {
-    font-size: 38px;
-    font-weight: 800;
-    margin-top: 10px;
+    font-size: 24px;
+    font-weight: 400;
+    color: #666;
   }
 
 </style>
@@ -112,14 +129,16 @@
 
 <body>
 
-<!-- LIVE INPUT -->
+<header class="header">
+  <img src="https://i.ibb.co/hR0Y98v/Main-SVS-Logo.jpg" alt="SVS Logo" class="logo">
+</header>
+
 <div class="controls">
-  <input id="amountInput" type="number" placeholder="Enter current amount ($)">
+  <input id="amountInput" type="number" placeholder="Enter amount ($)">
 </div>
 
 <div class="container">
 
-  <!-- SCALE -->
   <div class="scale">
     <div>$85,000</div>
     <div>$63,750</div>
@@ -128,9 +147,7 @@
     <div>$0</div>
   </div>
 
-  <!-- THERMOMETER -->
   <div class="thermometer">
-
     <div class="tick" style="bottom:25%"></div>
     <div class="tick-label" style="bottom:25%">25%</div>
 
@@ -141,10 +158,8 @@
     <div class="tick-label" style="bottom:75%">75%</div>
 
     <div class="fill" id="fill"></div>
-
   </div>
 
-  <!-- INFO -->
   <div class="info">
     <div class="title">Fundraising Progress</div>
     <div class="amount" id="amount">$0</div>
@@ -155,25 +170,21 @@
 
 <script>
   const goal = 85000;
-
   const fill = document.getElementById("fill");
   const amountText = document.getElementById("amount");
   const input = document.getElementById("amountInput");
 
   function update(amount) {
     amount = Number(amount) || 0;
-
     const percent = Math.min((amount / goal) * 100, 100);
 
     fill.style.height = percent + "%";
     amountText.textContent = "$" + amount.toLocaleString();
   }
 
-  // LIVE typing (this is what you wanted)
   input.addEventListener("input", () => {
     update(input.value);
   });
-
 </script>
 
 </body>
