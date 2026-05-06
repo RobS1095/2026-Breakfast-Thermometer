@@ -22,29 +22,19 @@
     gap: 80px;
   }
 
-  /* LEFT LABELS (MARKINGS) */
+  /* SCALE */
   .scale {
+    height: 80vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 80vh;
     font-size: 14px;
-    opacity: 0.9;
+    opacity: 0.85;
   }
 
   .scale div {
     position: relative;
-  }
-
-  .scale div::after {
-    content: "";
-    position: absolute;
-    left: 60px;
-    top: 50%;
-    width: 15px;
-    height: 2px;
-    background: white;
-    opacity: 0.5;
+    padding-left: 10px;
   }
 
   /* THERMOMETER */
@@ -52,9 +42,9 @@
     position: relative;
     width: 120px;
     height: 80vh;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255,255,255,0.08);
     border-radius: 60px;
-    border: 2px solid rgba(255,255,255,0.3);
+    border: 2px solid rgba(255,255,255,0.25);
     overflow: hidden;
     backdrop-filter: blur(6px);
   }
@@ -66,8 +56,22 @@
     height: 30%;
     background: linear-gradient(to top, #ff3b3b, #ffb347);
     transition: height 0.6s ease;
+    border-bottom-left-radius: 60px;
+    border-bottom-right-radius: 60px;
   }
 
+  /* FIX: clean base (removes weird artifact look) */
+  .thermometer::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background: transparent;
+    pointer-events: none;
+  }
+
+  /* BULB */
   .bulb {
     position: absolute;
     bottom: -70px;
@@ -77,10 +81,27 @@
     height: 160px;
     background: #ff3b3b;
     border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.3);
+    border: 2px solid rgba(255,255,255,0.25);
   }
 
-  /* CENTER LABEL */
+  /* TICK MARKS (25/50/75%) */
+  .tick {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(255,255,255,0.25);
+  }
+
+  .tick-label {
+    position: absolute;
+    left: 130px;
+    font-size: 12px;
+    opacity: 0.7;
+    transform: translateY(-50%);
+  }
+
+  /* INFO */
   .info {
     text-align: left;
   }
@@ -111,20 +132,29 @@
   <!-- SCALE -->
   <div class="scale">
     <div>$85,000</div>
-    <div>$75,000</div>
-    <div>$65,000</div>
-    <div>$55,000</div>
-    <div>$45,000</div>
-    <div>$35,000</div>
-    <div>$25,000</div>
-    <div>$15,000</div>
-    <div>$5,000</div>
+    <div>$63,750</div>
+    <div>$42,500</div>
+    <div>$21,250</div>
     <div>$0</div>
   </div>
 
   <!-- THERMOMETER -->
   <div class="thermometer">
+
+    <!-- ticks -->
+    <div class="tick" style="bottom:25%"></div>
+    <div class="tick-label" style="bottom:25%">25%</div>
+
+    <div class="tick" style="bottom:50%"></div>
+    <div class="tick-label" style="bottom:50%">50%</div>
+
+    <div class="tick" style="bottom:75%"></div>
+    <div class="tick-label" style="bottom:75%">75%</div>
+
+    <!-- fill -->
     <div class="fill" id="fill"></div>
+
+    <!-- bulb -->
     <div class="bulb"></div>
   </div>
 
@@ -139,8 +169,7 @@
 
 <script>
   const goal = 85000;
-
-  let currentAmount = 25500; // change this anytime
+  let currentAmount = 25500;
 
   const fill = document.getElementById("fill");
   const amountText = document.getElementById("amount");
@@ -152,13 +181,6 @@
   }
 
   updateThermometer(currentAmount);
-
-  // Example live update (you can delete this later)
-  // setInterval(() => {
-  //   currentAmount += 500;
-  //   updateThermometer(currentAmount);
-  // }, 3000);
-
 </script>
 
 </body>
