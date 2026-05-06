@@ -2,75 +2,72 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Thermometer - SVS Fundraising</title>
+<title>SVS Fundraising Thermometer</title>
 
 <style>
+  :root {
+    --svs-purple: #4A306D;
+    --svs-light-purple: #745B95;
+    --svs-peach: #F2D0C9;
+    --bg-gray: #F9F9F9;
+  }
+
   body {
     margin: 0;
     min-height: 100vh;
     display: flex;
-    flex-direction: column; /* Stack header and content */
+    flex-direction: column;
     align-items: center;
     background: #ffffff;
-    font-family: Arial, sans-serif;
-    color: #111;
-    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    padding: 40px 20px;
   }
 
-  /* HEADER / LOGO */
+  /* LOGO HEADER */
   .header {
-    width: 100%;
-    max-width: 800px;
+    margin-bottom: 50px;
     text-align: center;
-    margin-bottom: 40px;
   }
 
   .logo {
-    max-width: 300px; /* Adjust size as needed */
+    max-width: 350px;
     height: auto;
   }
 
-  /* INPUT */
-  .controls {
-    margin-bottom: 30px;
-  }
-
-  input {
-    padding: 10px;
-    font-size: 18px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    width: 220px;
-    text-align: center;
-  }
-
+  /* MAIN CONTAINER */
   .container {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 60px;
-    height: 60vh; /* Scaled down slightly to fit with header */
+    margin-bottom: 50px;
+    width: 100%;
+    max-width: 900px;
   }
 
   /* SCALE */
   .scale {
-    height: 100%;
+    height: 400px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    font-size: 14px;
-    opacity: 0.6;
-    padding-bottom: 10px; /* Align with thermometer bottom */
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--svs-purple);
+    text-align: right;
   }
 
   /* THERMOMETER */
   .thermometer {
     position: relative;
-    width: 100px;
-    height: 100%;
-    background: #f3f3f3;
-    border: 2px solid #ddd;
-    border-radius: 50px;
+    width: 80px;
+    height: 400px;
+    background: #eee;
+    border: 3px solid #ddd;
+    border-radius: 40px;
     overflow: hidden;
+    box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
   }
 
   .fill {
@@ -78,114 +75,137 @@
     bottom: 0;
     width: 100%;
     height: 0%;
-    background: linear-gradient(to top, #4a306d, #a288bd); /* Matches logo colors */
-    transition: height 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border-radius: 0; 
+    /* Gradient using SVS Purple and Peach */
+    background: linear-gradient(to top, var(--svs-purple), var(--svs-light-purple), var(--svs-peach));
+    transition: height 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67);
   }
 
-  /* MARKERS */
-  .tick {
+  /* PERCENTAGE TICKS */
+  .tick-mark {
     position: absolute;
     left: 0;
-    width: 10%;
+    width: 100%;
     height: 1px;
-    background: rgba(0,0,0,0.2);
+    background: rgba(255,255,255,0.4);
+    z-index: 2;
   }
 
-  .tick-label {
-    position: absolute;
-    left: 15%;
-    font-size: 11px;
-    opacity: 0.4;
-    transform: translateY(-50%);
-  }
-
-  /* INFO */
+  /* INFO PANEL */
   .info {
-    text-align: left;
+    flex: 1;
   }
 
   .title {
-    font-size: 28px;
-    font-weight: 700;
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #777;
     margin-bottom: 5px;
-    color: #4a306d; /* SVS Purple */
   }
 
   .amount {
-    font-size: 42px;
-    font-weight: 800;
-    margin-bottom: 10px;
+    font-size: 60px;
+    font-weight: 900;
+    color: var(--svs-purple);
+    margin: 0;
   }
 
-  .goal {
+  .goal-text {
     font-size: 24px;
-    font-weight: 400;
-    color: #666;
+    color: #555;
+    margin-top: 5px;
   }
 
+  /* INPUT AT BOTTOM */
+  .controls {
+    border-top: 2px solid #eee;
+    padding-top: 30px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .controls label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: var(--svs-purple);
+  }
+
+  input {
+    padding: 15px;
+    font-size: 20px;
+    border-radius: 12px;
+    border: 2px solid var(--svs-purple);
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+    outline: none;
+    transition: box-shadow 0.3s;
+  }
+
+  input:focus {
+    box-shadow: 0 0 10px rgba(74, 48, 109, 0.2);
+  }
 </style>
 </head>
-
 <body>
 
-<header class="header">
-  <img src="https://i.ibb.co/hR0Y98v/Main-SVS-Logo.jpg" alt="SVS Logo" class="logo">
-</header>
+  <header class="header">
+    <img src="Main SVS Logo.jpg" alt="Supporting Voices of Survivors Logo" class="logo">
+  </header>
 
-<div class="controls">
-  <input id="amountInput" type="number" placeholder="Enter amount ($)">
-</div>
+  <div class="container">
+    <div class="scale">
+      <div>$85,000</div>
+      <div>$63,750</div>
+      <div>$42,500</div>
+      <div>$21,250</div>
+      <div>$0</div>
+    </div>
 
-<div class="container">
+    <div class="thermometer">
+      <div class="tick-mark" style="bottom: 25%;"></div>
+      <div class="tick-mark" style="bottom: 50%;"></div>
+      <div class="tick-mark" style="bottom: 75%;"></div>
+      
+      <div class="fill" id="fill"></div>
+    </div>
 
-  <div class="scale">
-    <div>$85,000</div>
-    <div>$63,750</div>
-    <div>$42,500</div>
-    <div>$21,250</div>
-    <div>$0</div>
+    <div class="info">
+      <p class="title">Current Progress</p>
+      <h1 class="amount" id="amountText">$0</h1>
+      <p class="goal-text">Goal: <strong>$85,000</strong></p>
+    </div>
   </div>
 
-  <div class="thermometer">
-    <div class="tick" style="bottom:25%"></div>
-    <div class="tick-label" style="bottom:25%">25%</div>
-
-    <div class="tick" style="bottom:50%"></div>
-    <div class="tick-label" style="bottom:50%">50%</div>
-
-    <div class="tick" style="bottom:75%"></div>
-    <div class="tick-label" style="bottom:75%">75%</div>
-
-    <div class="fill" id="fill"></div>
+  <div class="controls">
+    <label for="amountInput">Update Fundraising Total:</label>
+    <input id="amountInput" type="number" placeholder="Enter $ amount" min="0">
   </div>
 
-  <div class="info">
-    <div class="title">Fundraising Progress</div>
-    <div class="amount" id="amount">$0</div>
-    <div class="goal">Goal: $85,000</div>
-  </div>
+  <script>
+    const goal = 85000;
+    const fill = document.getElementById("fill");
+    const amountText = document.getElementById("amountText");
+    const input = document.getElementById("amountInput");
 
-</div>
+    function updateThermometer(value) {
+      const amount = Number(value) || 0;
+      const percentage = Math.min((amount / goal) * 100, 100);
+      
+      // Update the height of the purple/peach bar
+      fill.style.height = percentage + "%";
+      
+      // Update the text display with commas
+      amountText.textContent = "$" + amount.toLocaleString();
+    }
 
-<script>
-  const goal = 85000;
-  const fill = document.getElementById("fill");
-  const amountText = document.getElementById("amount");
-  const input = document.getElementById("amountInput");
-
-  function update(amount) {
-    amount = Number(amount) || 0;
-    const percent = Math.min((amount / goal) * 100, 100);
-
-    fill.style.height = percent + "%";
-    amountText.textContent = "$" + amount.toLocaleString();
-  }
-
-  input.addEventListener("input", () => {
-    update(input.value);
-  });
-</script>
+    // Listen for typing in the bottom box
+    input.addEventListener("input", (e) => {
+      updateThermometer(e.target.value);
+    });
+  </script>
 
 </body>
 </html>
