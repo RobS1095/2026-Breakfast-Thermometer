@@ -12,34 +12,37 @@
 
   body {
     margin: 0;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Keeps everything centered vertically */
-    align-items: center;    /* Keeps everything centered horizontally */
+    justify-content: center;
+    align-items: center;
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #ffffff;
     color: #111;
+    padding: 20px;
   }
 
   /* LOGO */
-  .header {
-    margin-bottom: 20px;
-  }
-  .logo {
-    max-width: 250px;
-    height: auto;
+  .header { margin-bottom: 20px; }
+  .logo { max-width: 250px; height: auto; }
+
+  /* MAIN AREA */
+  .main-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
   }
 
-  /* MAIN THERMOMETER AREA */
   .container {
     display: flex;
     align-items: center;
-    gap: 60px;
-    margin-bottom: 30px;
+    gap: 40px;
+    background: #fff;
+    padding: 20px;
   }
 
-  /* SCALE */
+  /* SCALE & THERMOMETER */
   .scale {
     height: 400px;
     display: flex;
@@ -48,19 +51,16 @@
     font-size: 14px;
     font-weight: bold;
     color: var(--svs-purple);
-    opacity: 0.8;
   }
 
-  /* THERMOMETER TUBE */
   .thermometer {
     position: relative;
-    width: 80px;
+    width: 70px;
     height: 400px;
     background: #f0f0f0;
     border: 2px solid #ddd;
-    border-radius: 40px;
+    border-radius: 35px;
     overflow: hidden;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
   }
 
   .fill {
@@ -72,58 +72,91 @@
     transition: height 0.6s ease-out;
   }
 
-  /* INFO */
-  .info {
-    text-align: left;
-  }
-  .title { font-size: 24px; color: #666; margin: 0; }
-  .amount { font-size: 50px; font-weight: 800; color: var(--svs-purple); margin: 5px 0; }
-  .goal { font-size: 28px; font-weight: 700; color: #999; }
+  .info { text-align: left; }
+  .amount { font-size: 54px; font-weight: 800; color: var(--svs-purple); margin: 0; }
+  .goal { font-size: 24px; color: #999; margin-bottom: 20px; }
 
-  /* CONTROLS AT BOTTOM */
+  /* HISTORY PANEL */
+  .history-panel {
+    width: 200px;
+    height: 400px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 15px;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .history-panel h3 { margin-top: 0; font-size: 16px; color: var(--svs-purple); }
+
+  #historyList {
+    list-style: none;
+    padding: 0;
+    overflow-y: auto;
+    flex-grow: 1;
+  }
+
+  .history-item {
+    display: flex;
+    justify-content: space-between;
+    background: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    font-size: 13px;
+    border-left: 3px solid var(--svs-purple);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .remove-btn {
+    color: #ff4d4d;
+    cursor: pointer;
+    font-weight: bold;
+    border: none;
+    background: none;
+  }
+
+  /* CONTROLS */
   .controls {
     text-align: center;
-    background: #f9f9f9;
-    padding: 20px;
-    border-radius: 15px;
-    border: 1px solid #eee;
+    margin-top: 30px;
+    max-width: 600px;
   }
 
-  .button-group {
-    display: flex;
+  .button-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
   }
 
-  button {
-    padding: 10px 15px;
+  button.amount-btn {
+    padding: 12px;
     font-size: 14px;
     font-weight: bold;
     cursor: pointer;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     background: var(--svs-purple);
     color: white;
-    transition: opacity 0.2s;
   }
 
-  button:hover { opacity: 0.9; }
-  button:active { transform: scale(0.98); }
+  button.amount-btn:hover { background: var(--svs-dark); }
 
-  .undo-btn {
-    background: #ba3d3d;
-    font-size: 12px;
-    margin-top: 10px;
+  .custom-area {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
   }
 
   input {
-    padding: 9px;
-    font-size: 16px;
+    padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 6px;
-    width: 100px;
-    text-align: center;
+    border-radius: 8px;
+    width: 120px;
   }
+
 </style>
 </head>
 <body>
@@ -132,74 +165,101 @@
     <img src="Main SVS Logo.jpg" alt="SVS Logo" class="logo">
   </div>
 
-  <div class="container">
-    <div class="scale">
-      <div>$85,000</div>
-      <div>$63,750</div>
-      <div>$42,500</div>
-      <div>$21,250</div>
-      <div>$0</div>
+  <div class="main-layout">
+    <div class="container">
+      <div class="scale">
+        <div>$85,000</div>
+        <div>$63,750</div>
+        <div>$42,500</div>
+        <div>$21,250</div>
+        <div>$0</div>
+      </div>
+
+      <div class="thermometer">
+        <div class="fill" id="fill"></div>
+      </div>
+
+      <div class="info">
+        <div class="amount" id="totalText">$0</div>
+        <div class="goal">Goal: $85,000</div>
+      </div>
     </div>
 
-    <div class="thermometer">
-      <div class="fill" id="fill"></div>
-    </div>
-
-    <div class="info">
-      <p class="title">Progress</p>
-      <div class="amount" id="amountText">$0</div>
-      <div class="goal">Goal: $85,000</div>
+    <div class="history-panel">
+      <h3>Donation History</h3>
+      <ul id="historyList"></ul>
     </div>
   </div>
 
   <div class="controls">
-    <div class="button-group">
-      <button onclick="add(10)">+$10</button>
-      <button onclick="add(100)">+$100</button>
-      <button onclick="add(1000)">+$1,000</button>
-    </div>
-    
-    <div>
-      <input type="number" id="customInput" placeholder="Other">
-      <button onclick="addCustom()">Add</button>
+    <div class="button-grid">
+      <button class="amount-btn" onclick="add(25000)">+$25,000</button>
+      <button class="amount-btn" onclick="add(10000)">+$10,000</button>
+      <button class="amount-btn" onclick="add(5000)">+$5,000</button>
+      <button class="amount-btn" onclick="add(2500)">+$2,500</button>
+      <button class="amount-btn" onclick="add(1000)">+$1,000</button>
+      <button class="amount-btn" onclick="add(500)">+$500</button>
+      <button class="amount-btn" onclick="add(250)">+$250</button>
+      <button class="amount-btn" onclick="add(100)">+$100</button>
     </div>
 
-    <button class="undo-btn" onclick="undo()">Undo Last</button>
+    <div class="custom-area">
+      <input type="number" id="customInput" placeholder="Custom $">
+      <button class="amount-btn" onclick="addCustom()">Add</button>
+    </div>
   </div>
 
   <script>
     const goal = 85000;
-    let current = 0;
-    let history = [];
+    let donations = []; // Array to store each individual donation
 
     const fill = document.getElementById('fill');
-    const text = document.getElementById('amountText');
-    const custom = document.getElementById('customInput');
+    const totalText = document.getElementById('totalText');
+    const historyList = document.getElementById('historyList');
+    const customInput = document.getElementById('customInput');
 
     function update() {
-      const percent = Math.min((current / goal) * 100, 100);
+      // Calculate sum of all donations
+      const currentTotal = donations.reduce((sum, val) => sum + val, 0);
+      
+      // Update Thermometer
+      const percent = Math.min((currentTotal / goal) * 100, 100);
       fill.style.height = percent + '%';
-      text.textContent = '$' + current.toLocaleString();
+      
+      // Update Text
+      totalText.textContent = '$' + currentTotal.toLocaleString();
+      
+      // Update History List UI
+      historyList.innerHTML = '';
+      donations.forEach((amt, index) => {
+        const li = document.createElement('li');
+        li.className = 'history-item';
+        li.innerHTML = `
+          <span>+$${amt.toLocaleString()}</span>
+          <button class="remove-btn" onclick="removeDonation(${index})">✕</button>
+        `;
+        historyList.prepend(li); // Show newest at top
+      });
     }
 
     function add(amt) {
-      history.push(current); // Save current for undo
-      current += amt;
+      donations.push(amt);
       update();
     }
 
     function addCustom() {
-      const val = parseInt(custom.value);
+      const val = parseInt(customInput.value);
       if(val > 0) {
         add(val);
-        custom.value = '';
+        customInput.value = '';
       }
     }
 
-    function undo() {
-      if(history.length > 0) {
-        current = history.pop();
-        update();
-      }
+    function removeDonation(index) {
+      donations.splice(index, 1);
+      update();
     }
   </script>
+
+</body>
+</html>
