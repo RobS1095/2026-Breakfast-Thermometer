@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Fundraising Thermometer</title>
+<title>Thermometer</title>
 
 <style>
   body {
@@ -16,19 +16,18 @@
     color: #111;
   }
 
+  /* INPUT */
   .controls {
     position: absolute;
     top: 20px;
-    display: flex;
-    gap: 20px;
   }
 
   input {
     padding: 10px;
-    font-size: 16px;
+    font-size: 18px;
     border-radius: 8px;
     border: 1px solid #ccc;
-    width: 200px;
+    width: 220px;
   }
 
   .container {
@@ -53,11 +52,12 @@
     width: 120px;
     height: 80vh;
     background: #f3f3f3;
-    border-radius: 60px;
     border: 2px solid #ddd;
+    border-radius: 60px;
     overflow: hidden;
   }
 
+  /* 🔥 IMPORTANT FIX: NO ROUNDED FILL */
   .fill {
     position: absolute;
     bottom: 0;
@@ -65,15 +65,10 @@
     height: 0%;
     background: linear-gradient(to top, #ff3b3b, #ffb347);
     transition: height 0.4s ease;
-    border-radius: 60px 60px 0 0;
+    border-radius: 0; /* removes bottom blob */
   }
 
-  /* REMOVE BULB COMPLETELY (fixes red bottom issue) */
-  .bulb {
-    display: none;
-  }
-
-  /* MARKERS (subtle) */
+  /* MARKERS */
   .tick {
     position: absolute;
     left: 0;
@@ -107,7 +102,7 @@
   }
 
   .goal {
-    font-size: 36px;   /* 🔥 BIGGER GOAL */
+    font-size: 38px;
     font-weight: 800;
     margin-top: 10px;
   }
@@ -117,9 +112,9 @@
 
 <body>
 
-<!-- INPUT (live typing) -->
+<!-- LIVE INPUT -->
 <div class="controls">
-  <input id="amountInput" type="number" placeholder="Current amount ($)">
+  <input id="amountInput" type="number" placeholder="Enter current amount ($)">
 </div>
 
 <div class="container">
@@ -166,14 +161,17 @@
   const input = document.getElementById("amountInput");
 
   function update(amount) {
-    const percent = (amount / goal) * 100;
+    amount = Number(amount) || 0;
+
+    const percent = Math.min((amount / goal) * 100, 100);
+
     fill.style.height = percent + "%";
-    amountText.textContent = "$" + Number(amount || 0).toLocaleString();
+    amountText.textContent = "$" + amount.toLocaleString();
   }
 
-  // LIVE typing (no button needed)
+  // LIVE typing (this is what you wanted)
   input.addEventListener("input", () => {
-    update(Number(input.value));
+    update(input.value);
   });
 
 </script>
