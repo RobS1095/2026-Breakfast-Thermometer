@@ -242,61 +242,72 @@
     </div>
   </div>
 
-  <script>
-    const goal = 85000;
-    let donationHistory = [];
+<script>
+  const goal = 85000;
+  
+  // LOAD: This pulls the saved list from the browser's memory
+  // If the browser has no memory of this site, it starts with an empty list []
+  let donationHistory = JSON.parse(localStorage.getItem('svs_donations')) || [];
 
-    const fill = document.getElementById('fill');
-    const totalDisplay = document.getElementById('totalDisplay');
-    const historyList = document.getElementById('historyList');
-    const customInput = document.getElementById('customInput');
+  const fill = document.getElementById('fill');
+  const totalDisplay = document.getElementById('totalDisplay');
+  const historyList = document.getElementById('historyList');
+  const customInput = document.getElementById('customInput');
 
-    function refresh() {
-      const currentTotal = donationHistory.reduce((sum, val) => sum + val, 0);
-      const percentage = Math.min((currentTotal / goal) * 100, 100);
-      
-      fill.style.height = percentage + '%';
-      totalDisplay.textContent = '$' + currentTotal.toLocaleString();
-      
-      historyList.innerHTML = '';
-      donationHistory.forEach((amount, index) => {
-        const li = document.createElement('li');
-        li.className = 'history-item';
-        li.innerHTML = `
-          <span>+$${amount.toLocaleString()}</span>
-          <button class="del-btn" onclick="removeItem(${index})">✕</button>
-        `;
-        historyList.prepend(li);
-      });
-    }
-
-    function addAmount(val) {
-      donationHistory.push(val);
-      refresh();
-    }
-
-    function addCustom() {
-      const val = parseInt(customInput.value);
-      if (val > 0) {
-        addAmount(val);
-        customInput.value = '';
-        customInput.focus();
-      }
-    }
-
-    customInput.addEventListener("keypress", function(event) {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        addCustom();
-      }
+  function refresh() {
+    const currentTotal = donationHistory.reduce((sum, val) => sum + val, 0);
+    const percentage = Math.min((currentTotal / goal) * 100, 100);
+    
+    // Update the visual thermometer
+    fill.style.height = percentage + '%';
+    totalDisplay.textContent = '$' + currentTotal.toLocaleString();
+    
+    // SAVE: This writes the current list to the browser's memory
+    localStorage.setItem('svs_donations', JSON.stringify(donationHistory));
+    
+    // Clear the visual list and rebuild it from the saved data
+    historyList.innerHTML = '';
+    donationHistory.forEach((amount, index) => {
+      const li = document.createElement('li');
+      li.className = 'history-item';
+      li.innerHTML = `
+        <span>+$${amount.toLocaleString()}</span>
+        <button class="del-btn" onclick="removeItem(${index})">✕</button>
+      `;
+      historyList.prepend(li);
     });
+  }
 
-    function removeItem(index) {
-      donationHistory.splice(index, 1);
-      refresh();
+  function addAmount(val) {
+    donationHistory.push(val);
+    refresh();
+  }
+
+  function addCustom() {
+    const val = parseInt(customInput.value);
+    if (val > 0) {
+      addAmount(val);
+      customInput.value = '';
+      customInput.focus();
     }
-  </script>
+  }
 
-</body>
-</html>
-```
+  // Allows pressing "Enter" in the input box to add the amount
+  customInput.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      addCustom();
+    }
+  });
+
+  function removeItem(index) {
+    // Added a confirmation so you don't accidentally delete a donation
+    if(confirm("Are you sure you want to delete this donation?")) {
+        donationHistory.splice(index, 1);
+        refresh();
+    }
+  }
+
+  // INITIALIZE: This runs immediately when the page loads
+  refresh();
+</script>
